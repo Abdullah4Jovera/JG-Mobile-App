@@ -1,45 +1,56 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const passport = require("passport");
-const authRoute = require("./routes/auth");
-const cookieSession = require("cookie-session");
-const passportStrategy = require("./passport");
-const mongoose = require("mongoose");
-const app = express();
+import express from "express";
+import morgan from "morgan";
+import cors from "cors";
+import colors from "colors";
+import dotenv from "dotenv";
+import path from "path";
+import connectDB from "./config/db.js";
+import userRouter from "./routes/userRoutes.js";
+import propertyRouter from "./routes/propertyRoutes.js";
+import tenantRouter from "./routes/tenantRoutes.js";
+import maintenanceRouter from "./routes/maintenanceRoutes.js";
+import administrationfeeRouter from "./routes/administrationfeesRoutes.js";
 
-app.use(express.json());
+// Load environment variables
+dotenv.config();
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(err => console.error("Error connecting to MongoDB:", err));
+connectDB();
 
-app.use(
-	cookieSession({
-		name: "session",
-		keys: ["cyberwolve"],
-		maxAge: 24 * 60 * 60 * 100,
-	})
-);
+// Create an Express app
+const app = express();
+
+// Middleware setup
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
 
 
+// Set port
+const PORT = process.env.PORT || 8080;
 
-app.use(passport.initialize());
-app.use(passport.session());
 
-app.use(
-	cors({
-		origin: "http://localhost:3000",
-		methods: "GET,POST,PUT,DELETE",
-		credentials: true,
-	})
-);
 
-app.use("/auth", authRoute);
+// API routes
+app.use('/api/users', userRouter);
+app.use('/api/properties', propertyRouter);
+app.use('/api/tenants', tenantRouter);
+app.use('/api/maintenance', maintenanceRouter);
+app.use('/api/adminstrationfees', administrationfeeRouter);
 
-const port = process.env.PORT || 8080;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+
+// Serve static assets if in production
+if (process.env.NODE_ENV === 'production') {
+  const __dirname = path.resolve();
+  app.use(express.static(path.join(__dirname, './client/build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './client/build/index.html'));
+  });
+}
+
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

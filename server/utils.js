@@ -1,13 +1,16 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-const generateToken = (user) => {
+export const generateToken = (user) => {
   return jwt.sign(
     {
       _id: user._id,
       name: user.name,
       email: user.email,
-      contactnumber: user.contactnumber,
-      isAdmin: user.isAdmin,
+      role: user.role, 
+      picture: user.picture,
+      contact: user.contact,
+      nationality: user.nationality,
+      emid: user.emid,
     },
     process.env.JWT_SECRET,
     {
@@ -16,15 +19,15 @@ const generateToken = (user) => {
   );
 };
 
-const isAuth = (req, res, next) => {
+export const isAuth = (req, res, next) => {
   const authorization = req.headers.authorization;
   if (authorization) {
-    const token = authorization.slice(7, authorization.length); // Bearer XXXXXX
-    jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
+    const token = authorization.slice(7); // Remove "Bearer " from the token string
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         res.status(401).send({ message: 'Invalid Token' });
       } else {
-        req.user = decode;
+        req.user = decoded; // Decoded token contains user information
         next();
       }
     });
@@ -33,12 +36,16 @@ const isAuth = (req, res, next) => {
   }
 };
 
-const isAdmin = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
-    next();
-  } else {
-    res.status(401).send({ message: 'Invalid Admin Token' });
-  }
+export const hasRole = (roles) => {
+  return (req, res, next) => {
+    if (req.user && roles.includes(req.user.role)) {
+      next();
+    } else {
+      res.status(401).send({ message: 'Unauthorized' });
+    }
+  };
 };
 
-module.exports = { generateToken, isAuth, isAdmin };
+export const isAdmin = hasRole(['admin']);
+export const isSuperAdmin = hasRole(['superadmin']);
+export const isOwner = hasRole(['owner']);
