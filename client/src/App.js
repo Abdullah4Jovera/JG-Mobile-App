@@ -1,57 +1,49 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import "./App.css";
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Login from './Pages/Login';
+import SuperAdminRoute from './Pages/routes/SuperAdminRoute'
+import BusinessRoute from './Pages/routes/BusinessRoute'
+import MortgageRoute from './Pages/routes/MortgageRoute'
+import PersonalRoute from './Pages/routes/PersonalRoute'
+import UserRoute from './Pages/routes/UserRoute'
+import RealestateRoute from './Pages/routes/RealestateRoute'
+import SuperAdminDashboard from './Pages/SuperAdminPages/SuperAdminDashboard'
+import BusinessManagerDashboard from './Pages/BusinessFinanceLoanManagerPages/BusinessManagerDashboard'
+import UserDashboard from './Pages/UserPages/UserDashboard'
+import PersonalManagerDashboard from './Pages/PersonalLoanManagerPages/PersonalManagerDashboard'
+import RealestateManagerDashboard from './Pages/RealestateLoanManagerPages/RealestateMangerDashboard'
+import MortgageManagerDashboard from './Pages/MortgageLoanManagerPages/MortagageManagerDashboard'
+import Register from './Pages/Register';
 function App() {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-    const getUser = async () => {
-        try {
-            const url = `${process.env.REACT_APP_API_URL}/auth/login/success`;
-            const { data } = await axios.get(url, { withCredentials: true });
-            if (data.message === "Successfully Logged In" && data.user) {
-                setUser(data.user);
-            }
-            setLoading(false);
-        } catch (err) {
-            console.log(err);
-            setLoading(false);
-        }
-    };
+          {/* Super Admin Routes */}
+          <Route path="/superadmindashboard" element={<SuperAdminRoute ><SuperAdminDashboard /></SuperAdminRoute>} />
 
-    useEffect(() => {
-        getUser();
-    }, []);
+          {/* Busines Routes */}
+          <Route path="/businessfinanceloanmangerdashboard" element={<BusinessRoute ><BusinessManagerDashboard /></BusinessRoute>} />
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+          {/* Personal Routes */}
+          <Route path="/personalloanmangerdashboard" element={<PersonalRoute ><PersonalManagerDashboard /></PersonalRoute>} />
 
-    return (
-        <div className="container">
-            <Routes>
-                <Route
-                    exact
-                    path="/"
-                    element={user ? <Home user={user} /> : <Navigate to="/login" />}
-                />
-                <Route
-                    exact
-                    path="/login"
-                    element={user ? <Navigate to="/" /> : <Login />}
-                />
-                <Route
-                    path="/signup"
-                    element={user ? <Navigate to="/" /> : <Signup />}
-                />
-            </Routes>
-        </div>
-    );
+          {/* Realestate Routes */}
+          <Route path="/realestateloanmangerdashboard" element={<RealestateRoute ><RealestateManagerDashboard /></RealestateRoute>} />
+
+          {/* Mortgage Routes */}
+          <Route path="/mortgageloanmangerdashboard" element={<MortgageRoute ><MortgageManagerDashboard /></MortgageRoute>} />
+
+          {/* User Routes */}
+          <Route path="/userdashboard" element={<UserRoute ><UserDashboard /></UserRoute>} />
+
+
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
 
 export default App;

@@ -1,22 +1,24 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const passport = require("passport");
-const authRoute = require("./routes/auth");
 const cookieSession = require("cookie-session");
-const passportStrategy = require("./passport");
+const usersRouter = require('./routes/usersRouter')
 const mongoose = require("mongoose");
+const personalLoanRouter = require('./routes/personalLoanRouter');
+const businessFinanceRouter = require('./routes/businessFinanceLoanRouter');
+const realEstateLoanRouter = require('./routes/realEstateLoanRouter');
+const mortgageLoansRouter = require('./routes/mortgageLoanRouter');
 const app = express();
 
 app.use(express.json());
-
+app.use(cors());
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
 })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(err => console.error("Error connecting to MongoDB:", err));
+	.then(() => console.log("Connected to MongoDB"))
+	.catch(err => console.error("Error connecting to MongoDB:", err));
 
 app.use(
 	cookieSession({
@@ -28,18 +30,19 @@ app.use(
 
 
 
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(
-	cors({
-		origin: "http://localhost:3000",
-		methods: "GET,POST,PUT,DELETE",
-		credentials: true,
-	})
+	cors()
 );
 
-app.use("/auth", authRoute);
+app.use("/api/users", usersRouter);
+app.use("/api/personal-loans", personalLoanRouter);
+app.use("/api/businessfinance-loans", businessFinanceRouter);
+app.use("/api/realestate-loans", realEstateLoanRouter);
+app.use("/api/mortgage-loans", mortgageLoansRouter);
+
+
+
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
