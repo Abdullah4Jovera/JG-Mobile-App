@@ -1,49 +1,37 @@
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const passport = require("passport");
-const User = require("./models/userModel");
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const User = require('./models/userModel');
 
-passport.use(
-    new GoogleStrategy(
-        {
-            clientID: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: "/auth/google/callback",
-            scope: ["profile", "email"],
-        },
-        async (accessToken, refreshToken, profile, done) => {
-            try {
-                // Check if user already exists in the database
-                let user = await User.findOne({ email: profile.emails[0].value });
-
-                if (!user) {
-                    // If user does not exist, create a new user
-                    user = new User({
-                        name: profile.displayName,
-                        email: profile.emails[0].value,
-                        image: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null, 
-                    });
-                    await user.save();
-                }
-
-                return done(null, user);
-            } catch (error) {
-                return done(error);
-            }
-        }
-    )
-);
-
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-    try {
-        const user = await User.findOne({ _id: id });
-        done(null, user);
-    } catch (error) {
-        done(error);
+passport.use(new GoogleStrategy({
+    clientID: "1069755088895-sttrd292vsilkmfmprq8641p2pbctn4q.apps.googleusercontent.com",
+    clientSecret: "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",
+    callbackURL: "/auth/google/callback"
+  },
+  async function(accessToken, refreshToken, profile, done) {
+    // Check if user already exists in the database
+    let user = await User.findOne({ googleId: profile.id });
+    if (!user) {
+      // If user doesn't exist, create a new user in the database
+      user = new User({
+        googleId: profile.id,
+        name: profile.displayName,
+        email: profile.emails[0].value,
+        image: profile.photos[0].value
+      });
+      await user.save();
     }
+    return done(null, user);
+  }
+));
+
+// Serialize user
+passport.serializeUser((user, done) => {
+  done(null, user.id);
 });
 
-module.exports = passport;
+// Deserialize user
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
+});
