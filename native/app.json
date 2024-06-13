@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "Joveraapplication",
-    "slug": "Joveraapplication",
+    "name": "Jovera Group",
+    "slug": "Jovera-Group",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/joveralogo.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#000"
     },
     "ios": {
       "supportsTablet": true
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.naveed01.Joveraapplication"
+      "package": "com.newpackage.Joveraapplication"
     },
     "web": {
       "bundler": "metro",
@@ -38,7 +38,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "2d622335-ac1d-4753-8c62-75020a3a7c8e"
+        "projectId": "5e111a31-cdec-4907-b5f6-10d7a6714531"
       }
     }
   }

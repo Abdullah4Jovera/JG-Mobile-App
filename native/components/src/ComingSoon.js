@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
       },
       cmingsoontext:{
         paddingTop:40,
-          justifyContent:'center',
-            alignItems:'center'
+        justifyContent:'center',
+        alignItems:'center'
       },
       text:{
         fontSize:24,

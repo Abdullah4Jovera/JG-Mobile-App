@@ -57,7 +57,7 @@ const ServicesProvided = () => {
         },
         {
             id: 3,
-            Image: require('../../../assets/images/alondralogo.png'),
+            Image: require('../../../assets/images/alondralogobg.png'),
         },
     ];
 

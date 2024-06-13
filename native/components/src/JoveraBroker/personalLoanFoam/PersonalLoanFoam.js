@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     dialogStyle: {
         borderRadius: 10,
         backgroundColor: 'black',
-        borderColor: '1px solid #000',
+        borderColor: '',
         height: '25%',
         justifyContent: 'center',
         alignItems: 'center',

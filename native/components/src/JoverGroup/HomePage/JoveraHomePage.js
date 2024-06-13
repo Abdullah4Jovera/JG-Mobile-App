@@ -27,7 +27,7 @@ const Services = () => {
                 {/* ALL Services Button */}
                 <View style={styles.buttonContainer}>
                     <View style={styles.logoTextView}>
-                        <Image source={require('../../../../assets/images/businesslogo.png')} />
+                    <Image source={require('../../../../assets/images/businesslogo.png')} />
                     </View>
 
                     <View style={styles.joveraTextCommercial}>
@@ -42,7 +42,7 @@ const Services = () => {
 
                 <View style={styles.buttonContainer}>
                     <View style={styles.logoTextView}>
-                        <Image source={require('../../../../assets/images/travelhomelogo.png')} />
+                        <Image source={require('../../../../assets/images/realestatelogo.png')} />
                     </View>
 
                     <View style={styles.joveraTextCommercial}>
@@ -65,7 +65,7 @@ const Services = () => {
                         <Text style={styles.commercialText}>TRAVEL & TOURISM</Text>
                     </View>
 
-                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('ComingSoon')} >
+                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('TravelHomePage')} >
                         <Text>Visit</Text>
                     </TouchableOpacity>
                 </View>
@@ -80,7 +80,7 @@ const Services = () => {
                         <Text style={styles.commercialText}>ADVERTISEMENT & WEBSITE</Text>
                     </View>
 
-                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('ComingSoon')}>
+                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('AlondraHomePage')}>
                         <Text>Visit</Text>
                     </TouchableOpacity>
                 </View>
@@ -95,7 +95,7 @@ const Services = () => {
                         <Text style={styles.commercialText}>GENERAL TRADING</Text>
                     </View>
 
-                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('ComingSoon')}>
+                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('GeneralTradingHomePage')}>
                         <Text>Visit</Text>
                     </TouchableOpacity>
                 </View>
@@ -110,7 +110,7 @@ const Services = () => {
                         <Text style={styles.commercialText}>CREDIT & AUDITING</Text>
                     </View>
 
-                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('ComingSoon')}>
+                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('CreditAndAuditHomePage')}>
                         <Text>Visit</Text>
                     </TouchableOpacity>
                 </View>
@@ -125,7 +125,7 @@ const Services = () => {
                         <Text style={styles.commercialText}>PROPERTY VALUATION</Text>
                     </View>
 
-                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('ComingSoon')}>
+                    <TouchableOpacity style={styles.VisitBtn} onPress={() => navigation.navigate('PropertyHomePage')}>
                         <Text>Visit</Text>
                     </TouchableOpacity>
                 </View>

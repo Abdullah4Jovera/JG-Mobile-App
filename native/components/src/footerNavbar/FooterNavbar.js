@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, TouchableOpacity, Text, TouchableWithoutFeedba
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused  } from '@react-navigation/native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const FooterNavbar = () => {
   const navigation = useNavigation();
@@ -96,7 +97,7 @@ const FooterNavbar = () => {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('MainScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('MianScreen')}>
             <Image
               source={require('../../../assets/images/playbtn.png')}
             />
@@ -123,6 +124,11 @@ const FooterNavbar = () => {
           {visible.menu && (
           <View style={styles.menuContainer}>
             <Image style={styles.menuImage} source={require('../../../assets/images/menuBar.png')} />
+            <TouchableOpacity style={styles.menuItemPayment} onPress={() => navigation.navigate('MemberShip')}>
+              <MaterialIcons style={styles.dropdownImage}  name="card-membership" size={24} color="black" />
+              <Text style={styles.menuItemText}>Member Ship</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('LoanCalculator')}>
               <Image source={require('../../../assets/images/Calculator.png')} style={styles.dropdownImage} />
               <Text style={styles.menuItemText}>Loan Calculator</Text>
@@ -165,10 +171,7 @@ const FooterNavbar = () => {
               <Image source={require('../../../assets/images/setting.png')} style={styles.dropdownImage} />
               <Text style={styles.menuItemText}>Settings</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItemPayment} onPress={() => navigation.navigate('MemberShip')}>
-              <Image source={require('../../../assets/images/Calculator.png')} style={styles.dropdownImage} />
-              <Text style={styles.menuItemText}>Payment</Text>
-            </TouchableOpacity>
+
             {
               isLoggedIn ? 
               <>
@@ -241,7 +244,7 @@ const styles = StyleSheet.create({
   },
     menuItem: {
     position: 'absolute',
-    top: '15%', 
+    top: '22%', 
     left: '47%', 
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
@@ -249,7 +252,7 @@ const styles = StyleSheet.create({
   },
   menuItemAboutUs:{
     position: 'absolute',
-    top: '22%', 
+    top: '28%', 
     left: '47%', 
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
@@ -267,7 +270,7 @@ const styles = StyleSheet.create({
   },
     menuItemContact:{
     position: 'absolute',
-    top: '35%', 
+    top: '40%', 
     left: '47%', 
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
@@ -275,7 +278,7 @@ const styles = StyleSheet.create({
   },
   menuItemTerms: {
     position: 'absolute',
-    top: '29%', 
+    top: '34%', 
     left: '47%', 
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
@@ -283,7 +286,7 @@ const styles = StyleSheet.create({
   },
   menuItemPrivacy: {
     position: 'absolute',
-    top: '42%', 
+    top: '46%', 
     left: '47%', 
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
@@ -291,7 +294,7 @@ const styles = StyleSheet.create({
   },
   menuItemHelp: {
     position: 'absolute',
-    top: '49%', 
+    top: '52%', 
     left: '47%', 
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
@@ -299,7 +302,7 @@ const styles = StyleSheet.create({
   },
   menuItemFeedBack:{
     position: 'absolute',
-    top: '56%', 
+    top: '58%', 
     left: '47%', 
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
@@ -307,7 +310,7 @@ const styles = StyleSheet.create({
   },
   menuItemfaq:{
     position: 'absolute',
-    top: '63%', 
+    top: '64%', 
     left: '48%', 
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
@@ -323,15 +326,15 @@ const styles = StyleSheet.create({
   },
   menuItemPayment:{
     position: 'absolute',
-    top: '77%', 
-    left: '49%', 
+      top: '15%', 
+    left: '47%',
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
     alignItems: 'center'
   },
   menuItemlogout:{
-    // position: 'absolute',
-    top: '84%', 
+    position: 'absolute',
+    top: '76%', 
     left: '48%', 
     transform: [{ translateX: -50 }, { translateY: -50 }],
     flexDirection: 'row',
