@@ -24,31 +24,42 @@ const MemberShip = () => {
 
         <View style={styles.subscriptionBtnView}>
           <TouchableOpacity
-            style={styles.subscriptionBtn}
-            // onPress={() => handlePress('yearly')}
+            style={[styles.subscriptionBtn, selectedPlan === 'monthly' && styles.selectedBtn]}
+            onPress={() => handlePress('monthly')}
           >
-            <Text style={styles.btnText}>Member Ship Plan</Text>
+            <Text style={styles.btnText}>MONTHLY</Text>
           </TouchableOpacity>
-       
+          <TouchableOpacity
+            style={[styles.subscriptionBtn, selectedPlan === 'yearly' && styles.selectedBtn]}
+            onPress={() => handlePress('yearly')}
+          >
+            <Text style={styles.btnText}>YEARLY-20% OFF</Text>
+          </TouchableOpacity>
+        </View>
 
+        <View style={styles.purchaseMmeber} >
+            <Image source={require('../../../assets/images/silver.png')} />
+            <Text style={styles.btnTextgold} >SILVER</Text>
             <TouchableOpacity style={styles.btnStyleapply} onPress={()=>navigation.navigate('PriceModelSilver')} >
-                <Image source={require('../../../assets/images/silver.png')} />
-                <Text style={styles.btnTextgold} >SILVER</Text>
                 <Text style={styles.applyText}>Apply</Text>
             </TouchableOpacity>
+        </View>
 
+        <View style={styles.purchaseMmeber}>
+            <Image source={require('../../../assets/images/diamond.png')} />
+            <Text style={styles.btnTextgold} >Gold</Text>
             <TouchableOpacity style={styles.btnStyleapply} onPress={()=>navigation.navigate('PriceModelGold')}>
-              <Image source={require('../../../assets/images/diamond.png')} />
-              <Text style={styles.btnTextgold} >Gold</Text>
                 <Text style={styles.applyText}>Apply</Text>
             </TouchableOpacity>
+        </View>
 
+        <View style={styles.purchaseMmeber}>
+            <Image source={require('../../../assets/images/diamondgold.png')} />
+            <Text style={styles.btnTextgold} >Diamond</Text>
             <TouchableOpacity style={styles.btnStyleapply} onPress={()=>navigation.navigate('PriceModelDiamond')}>
-              <Image source={require('../../../assets/images/diamondgold.png')} />
-              <Text style={styles.btnTextgold} >Diamond</Text>
                 <Text style={styles.applyText} >Apply</Text>
             </TouchableOpacity>
-            </View>
+        </View>
       </ImageBackground>
       <FooterNavbar />
     </View>
@@ -86,21 +97,18 @@ const styles = StyleSheet.create({
   },
   subscriptionBtnView: {
     backgroundColor: '#2F3133',
-    borderRadius: 10,
-    width: '90%',
-    flexDirection: 'column',
+    borderRadius: 100,
+    width: '60%',
+    flexDirection: 'row',
     paddingVertical: 16,
     justifyContent: 'space-evenly',
     alignItems: 'center',
     marginTop: 15,
-    backgroundColor:'rgba(255,255,255,0.25)',
-    height:'80%'
   },
   subscriptionBtn: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    backgroundColor:'rgba(0,0,0,0.75)'
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 50,
   },
   selectedBtn: {
     backgroundColor: 'white',
@@ -108,7 +116,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: '#B9BEC1',
-    fontSize: 15,
+    fontSize: 11,
     textTransform: 'uppercase',
     fontWeight: '700',
   },
@@ -130,6 +138,6 @@ const styles = StyleSheet.create({
     marginTop:10
   },
   btnStyleapply:{
-    marginTop:6,
+    marginTop:6
   }
 });

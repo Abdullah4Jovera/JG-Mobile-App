@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, ScrollView, Dimensions } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import Navbar from '../navbar/Navbar';
 import FooterNavbar from '../footerNavbar/FooterNavbar';
 import { ResizeMode } from 'expo-av';
@@ -12,7 +11,6 @@ const { width, height } = Dimensions.get('window');
 const MainScreen = () => {
   const [videos, setVideos] = useState([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const videoRefs = useRef([]);
 
   useEffect(() => {
     fetch('https://studies-kde-suspension-composer.trycloudflare.com/api/videos/all-videos')
@@ -25,26 +23,21 @@ const MainScreen = () => {
       .catch((error) => console.error('Error fetching videos:', error));
   }, []);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const videoRef = videoRefs.current[currentVideoIndex];
-      if (videoRef) {
-        videoRef.playAsync();
-      }
+  const handlePlayNextVideo = () => {
+    if (currentVideoIndex < videos.length - 1) {
+      setCurrentVideoIndex((prevIndex) => prevIndex + 1);
+    }
+  };
 
-      return () => {
-        const videoRef = videoRefs.current[currentVideoIndex];
-        if (videoRef) {
-          videoRef.pauseAsync();
-        }
-      };
-    }, [currentVideoIndex])
-  );
+  const handlePlayPrevVideo = () => {
+    if (currentVideoIndex > 0) {
+      setCurrentVideoIndex((prevIndex) => prevIndex - 1);
+    }
+  };
 
   const renderItem = ({ item, index }) => (
     <View style={styles.videoContainer}>
       <VideoPlayer
-        ref={(ref) => (videoRefs.current[index] = ref)}
         key={item.url}
         style={styles.videoPlayer}
         videoProps={{
@@ -90,9 +83,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  controlText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+  },
   videoContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+
 });

@@ -1,55 +1,112 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ImageBackground ,ActivityIndicator,Button} from 'react-native';
-import Navbar from '../navbar/Navbar';
-import FooterNavbar from '../footerNavbar/FooterNavbar';
+import { StyleSheet, Text, View, ImageBackground, Button, ActivityIndicator, Alert } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ServiceDetails = (props) => {
+const ServiceDetails = ({ route }) => {
     const [token, setToken] = useState('');
     const [error, setError] = useState('');
-    const { route } = props;
-    const [loanData,setLoanData]=useState('')
+    const [loanData, setLoanData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { loanId, loanType } = route.params;
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
-                setLoading(true)
                 const myValue = await AsyncStorage.getItem('userData');
                 const userData = JSON.parse(myValue);
                 setToken(userData.token);
 
-                // Fetch loan details
-                const response = await fetch(`https://studies-kde-suspension-composer.trycloudflare.com/api/loans/loan/${loanId}/${loanType}`, {
+                const response = await fetch(`https://studies-kde-suspension-composer.trycloudflare.com/api/loans/loan/${route.params.loanId}/${route.params.loanType}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userData.token}`,
+                        Authorization: `Bearer ${userData.token}`,
                     },
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    setLoanData(data)
-                    console.log('Fetched data:', data);
+                    setLoanData(data);
                 } else {
                     throw new Error('Failed to fetch loan details');
                 }
             } catch (error) {
                 setError(error.message);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
         };
 
-        fetchData(); // Call fetchData function when component mounts
-    }, []);
+        fetchData();
+    }, [route.params.loanId, route.params.loanType]);
+
+    const handleFileSelect = async () => {
+        try {
+            const result = await DocumentPicker.getDocumentAsync({
+                type: '*/*', // Accept all types of documents
+                copyToCacheDirectory: false, // Do not copy the file to the cache directory
+            });
+
+            if (result.type === 'success') {
+                setSelectedFiles([...selectedFiles, result]);
+            } else {
+                console.log('Document picker cancelled');
+            }
+        } catch (error) {
+            console.error('Error selecting document:', error);
+            Alert.alert('Document Picker Error', 'An error occurred while selecting the document.');
+        }
+    };
+
+    const handleUpload = async () => {
+        try {
+            setUploading(true);
+
+            const formData = new FormData();
+            await Promise.all(
+                selectedFiles.map(async (file) => {
+                    const fileInfo = await FileSystem.getInfoAsync(file.uri);
+                    const fileUriParts = file.uri.split('/');
+                    const fileName = fileUriParts[fileUriParts.length - 1];
+
+                    formData.append('documents', {
+                        uri: fileInfo.uri,
+                        name: fileName,
+                        type: fileInfo.mimeType,
+                    });
+                })
+            );
+
+            const uploadResponse = await fetch(`https://studies-kde-suspension-composer.trycloudflare.com/api/loans/upload-documents/${loanData.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+                body: formData,
+            });
+
+            if (uploadResponse.ok) {
+                alert('Documents uploaded successfully');
+                setSelectedFiles([]); // Clear selected files after upload
+                fetchData(); // Fetch updated loan data
+            } else {
+                throw new Error('Failed to upload documents');
+            }
+        } catch (error) {
+            setUploadError(error.message);
+        } finally {
+            setUploading(false);
+        }
+    };
 
     return (
         <View style={styles.container}>
-            <Navbar />
             <ImageBackground
                 source={require('../../../assets/images/dashboardbg.png')}
                 style={styles.backgroundImage}
@@ -57,220 +114,49 @@ const ServiceDetails = (props) => {
             >
                 <Text style={styles.headerText}>Service Details</Text>
 
+                {/* Upload Documents Section */}
+                <View style={styles.uploadContainer}>
+                    <Text style={styles.uploadLabel}>Upload Documents:</Text>
+                    <View style={styles.fileInputContainer}>
+                        <Button title="Select Files" onPress={handleFileSelect} />
+                        <Text>{selectedFiles.length} file(s) selected</Text>
+                    </View>
+                    <Button
+                        title="Upload"
+                        onPress={handleUpload}
+                        disabled={uploading || selectedFiles.length === 0}
+                    />
+                </View>
+
+                {uploading && <ActivityIndicator size="large" color="#F3C147" />}
+                {uploadError && <Text style={styles.errorText}>{uploadError}</Text>}
+
+                {/* Loan Details Section */}
                 <View style={styles.loanSectionContainer}>
-                <View style={styles.loanSection}>
-
-                    {loanType === 'businessFinanceLoans' && (
-                      <>
-                        <Text style={styles.loanTextbusiness}>
-                            {loanType ? 'Business Finance' : "Business Type"}
-                        </Text>
-                        
-                        {
-                            loading ? (
+                    <View style={styles.loanSection}>
+                        {/* Display Loan Details */}
+                        {loading ? (
                             <ActivityIndicator size="large" color="#F3C147" style={styles.spinner} />
-                            ) : (
-                            <View style={styles.loanContainer}>
-                                <View style={styles.loanDetails}>
-                                    <Text style={styles.loanText}>
-                                        {loanData && `Company Name : ${loanData.companyName || ''}`}
-                                    </Text>
+                        ) : (
+                            loanData && (
+                                <View style={styles.loanContainer}>
+                                    {/* Display loanData properties */}
+                                    <View style={styles.loanDetails}>
+                                        <Text style={styles.loanText}>
+                                            Company Name : {loanData.companyName || ''}
+                                        </Text>
+                                    </View>
+                                    <View style={styles.loanDetails}>
+                                        <Text style={styles.loanText}>
+                                            Services : {loanData.services || ''}
+                                        </Text>
+                                    </View>
+                                    {/* Add other loan details as needed */}
                                 </View>
-    
-                                <View style={styles.loanDetails}>
-                                    <Text style={styles.loanText}>
-                                        {loanData && `services : ${loanData.services || ''}`}
-                                    </Text>
-                                </View>
-    
-                                <View style={styles.loanDetails}>
-                                    <Text style={styles.loanText}>
-                                        {loanData && `companyPOS : ${loanData.companyPOS || ''}`}
-                                    </Text>
-                                </View>
-    
-                                <View style={styles.loanDetails}>
-                                    <Text style={styles.loanText}>
-                                        {loanData && `companyTurnoverAnually : ${loanData.companyTurnoverAnually || ''}`}
-                                    </Text>
-                                </View>
-    
-                                <View style={styles.loanDetails}>
-                                    <Text style={styles.loanText}>
-                                        {loanData && `posTurnoverMonthly : ${loanData.posTurnoverMonthly || ''}`}
-                                    </Text>
-                                </View>
-    
-                                <View style={styles.loanDetails}>
-                                    <Text style={styles.loanText}>
-                                        {loanData && `Message : ${loanData.message || ''}`}
-                                    </Text>
-                                </View>
-    
-                                <View style={styles.loanDetails}>
-                                    <Text style={styles.loanText}>
-                                        {loanData && `source : ${loanData.source || ''}`}
-                                    </Text>
-                                </View>
-    
-                                <View style={styles.loanDetails}>
-                                    <Text style={styles.loanText}>
-                                        {loanData && `status : ${loanData.status || ''}`}
-                                    </Text>
-                                </View>
-    
-                                <View style={styles.loanDetails}>
-                                    <Text style={styles.loanText}>
-                                        {loanData && `Date : ${loanData.applicationDate || ''}`}
-                                    </Text>
-                                </View>
-                            </View>
                             )
-                        }
- 
-                     </>
-                    )}
-
-                    {loanType === 'mortgageLoans' && (
-                        <>
-                            <Text style={styles.loanTextbusiness}>
-                                {loanType ? 'Mortgage Loan' : "Mortgage Loan"}
-                            </Text>
-
-                            {
-                                loading ? (
-                                    <ActivityIndicator size="large" color="#F3C147" style={styles.spinner} />
-                                ) : (
-                                    <View style={styles.loanContainer}>
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Company Name : ${loanData.companyName || 'Jovera Group'}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Property Location : ${loanData.propertyLocation || ''}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Type Of Property : ${loanData.typeOfProperty || ''}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Monthly Income : ${loanData.monthlyIncome || ''} AED`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Message : ${loanData.message || ''}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `source : ${loanData.source || ''}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `status : ${loanData.status || ''}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Date : ${loanData.applicationDate || ''}`}
-                                        </Text>
-                                    </View>
-                                </View>
-                                )
-                            }
-                       
-                        </>
-                    )}
-
-                    {loanType === 'personalLoans' && (
-                        <>
-                            <Text style={styles.loanTextbusiness}>
-                                {loanType ? 'Personal Loan' : "Personal Loan"}
-                            </Text>
-
-                            {
-                                loading ? (
-                                    <ActivityIndicator size="large" color="#F3C147" style={styles.spinner} />
-                                ): (
-                                    <View style={styles.loanContainer}>
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Company Name : ${loanData.companyName || 'Jovera Group'}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Loan Amount : ${loanData.loanAmount || ''} AED`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Monthly Loan : ${loanData.monthlySalary || ''} AED`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Pervious Loan Amount : ${loanData.previousloanAmount || ''} AED`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Any Loan : ${loanData.anyLoan || ''}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Message : ${loanData.message || ''}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `source : ${loanData.source || ''}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `status : ${loanData.status || ''}`}
-                                        </Text>
-                                    </View>
-    
-                                    <View style={styles.loanDetails}>
-                                        <Text style={styles.loanText}>
-                                            {loanData && `Date : ${loanData.applicationDate || ''}`}
-                                        </Text>
-                                    </View>
-                                </View>
-                                )
-                            }
-
-    
-                        </>
-                    )}
-
+                        )}
+                    </View>
                 </View>
-                </View>
-                <FooterNavbar/>
             </ImageBackground>
         </View>
     );
@@ -284,52 +170,54 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         flex: 1,
+        resizeMode: 'cover',
         justifyContent: 'center',
-        alignItems: 'center',
     },
     headerText: {
+        fontSize: 24,
+        fontWeight: 'bold',
         textAlign: 'center',
-        fontSize: 20,
-        paddingTop: 30,
-        color: 'white',
-        fontWeight: '500',
+        marginTop: 20,
+    },
+    uploadContainer: {
+        marginVertical: 20,
+        paddingHorizontal: 20,
+    },
+    uploadLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    fileInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
     },
     loanSectionContainer: {
-        flex: 1,
-        justifyContent: 'start',
-        alignItems: 'center',
-        width: '100%',
-    },
-    loanSection: {
-        width: '80%',
-        backgroundColor: 'rgba(224, 224, 224, 0.58)',
-        borderRadius: 15,
-        paddingVertical: 25,
         paddingHorizontal: 20,
         marginTop: 20,
     },
-    loanContainer: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        borderRadius: 10,
+    loanSection: {
+        backgroundColor: 'white',
         padding: 10,
-        marginVertical: 10,
+        borderRadius: 10,
+        elevation: 3,
+    },
+    loanContainer: {
+        marginTop: 10,
     },
     loanDetails: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        marginBottom: 5,
     },
     loanText: {
-        color: '#FFFFFF',
-        fontSize: 14,
-        paddingTop:5,
-        // textTransform:'uppercase'
+        fontSize: 16,
     },
-    loanTextbusiness:{
-        color: '#FFFFFF',
-        fontSize: 14,
-        paddingTop:5,
-        textTransform:'uppercase',
-        fontWeight:'600'
-    }
+    spinner: {
+        marginTop: 20,
+    },
+    errorText: {
+        color: 'red',
+        marginTop: 10,
+        textAlign: 'center',
+    },
 });

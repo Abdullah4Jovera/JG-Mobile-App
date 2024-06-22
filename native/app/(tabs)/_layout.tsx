@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler';
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
@@ -51,11 +50,6 @@ import PriceModelDiamond from '@/components/src/memberShip/PriceModelDaimond';
 import Notifications from '@/components/src/notifications/Notifications';
 import SpecficDetailsRealEstate from '@/components/src/realEstate/SpecficDetailsRealEstate';
 import ComingSoon from '@/components/src/ComingSoon';
-import TravelHomePage from '@/components/src/TravelandTourism/TravelHomePage';
-import AlondraHomePage from '@/components/src/alondra/AlondraHomePage';
-import GeneralTradingHomePage from '@/components/src/generalTrading/GeneralTrading';
-import CreditAndAuditHomePage from '@/components/src/creditandAuditing/CreditAndAuditHomePage';
-import PropertyHomePage from '@/components/src/propertyValuation/PropertyHomePage';
 import Carousel from '@/components/src/carousal/Carousal';
 
 export default function TabLayout() {
@@ -264,31 +258,6 @@ export default function TabLayout() {
       <Stack.Screen 
         name="HomePage" 
         component={HomePage} 
-        options={{ headerShown: false }} 
-      />
-      <Stack.Screen 
-        name="TravelHomePage" 
-        component={TravelHomePage} 
-        options={{ headerShown: false }} 
-      />
-      <Stack.Screen 
-        name="AlondraHomePage" 
-        component={AlondraHomePage} 
-        options={{ headerShown: false }} 
-      />
-      <Stack.Screen 
-        name="GeneralTradingHomePage" 
-        component={GeneralTradingHomePage} 
-        options={{ headerShown: false }} 
-      />
-       <Stack.Screen 
-        name="CreditAndAuditHomePage" 
-        component={CreditAndAuditHomePage} 
-        options={{ headerShown: false }} 
-      />
-       <Stack.Screen 
-        name="PropertyHomePage" 
-        component={PropertyHomePage} 
         options={{ headerShown: false }} 
       />
       <Stack.Screen 

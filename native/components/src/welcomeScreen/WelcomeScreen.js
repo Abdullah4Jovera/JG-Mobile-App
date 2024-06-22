@@ -8,13 +8,13 @@ const WelcomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Video
+      <Video
         source={require('../../../assets/images/background.mp4')}
         style={styles.video}
         shouldPlay
         isLooping
         resizeMode="cover"
-      /> */}
+      />
       <View style={styles.overlay}>
         <Image style={styles.welcomelogo} source={require('../../../assets/images/welcomejoveralogo.png')} />
         <Text style={styles.textlanguage}>Select language to continue</Text>

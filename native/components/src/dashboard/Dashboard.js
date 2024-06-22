@@ -7,12 +7,13 @@ import FooterNavbar from '../footerNavbar/FooterNavbar';
 
 
 const Dashboard = (props) => {
-  const [userLoans, setUserLoans] = useState({});
+  const [userLoans, setUserLoans] = useState({}); 
   const [error, setError] = useState('');
   const [token, setToken] = useState('');
   const [user, setUser] = useState('');
   const [loading, setLoading] = useState(false);
- 
+  const defaultProfileImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR85uqQ4ZC48edw6yqCwr4EN8_RsR1l-c3ofOhTHZrXrTPROKsg&s';
+
 
 console.log(userLoans,'userLoansuserLoans');
   // API Call
@@ -62,7 +63,6 @@ console.log(userLoans,'userLoansuserLoans');
   
       return (
         <View style={styles.loanSection}>
-          {console.log("loans length:", loans.length)}
           {loans.length === 0 ? (
           <TouchableOpacity style={styles.applybtn} onPress={() => props.navigation.navigate('BusinessFinanceFoam')}>
             <Text style={styles.applybtnText}>Apply</Text>
@@ -109,11 +109,15 @@ console.log(userLoans,'userLoansuserLoans');
       >
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.profileImage}>
-            <Image style={styles.ellipse} source={require('../../../assets/images/Ellipse.jpg')} />
+            <Image style={styles.ellipse} source={require('../../../assets/images/dummyprofile.jpg')} />
           </View>
           <Text style={styles.userName}>{user.name && user.name}</Text>
           <Text style={styles.userEmail}>{user.email && user.email}</Text>
-          <Text style={styles.userEmail}>{user.contactNumber && user.contactNumber}</Text>
+          {/* <Text style={styles.userEmail}>{user.contactNumber && user.contactNumber}</Text> */}
+
+          <TouchableOpacity onPress={()=>props.navigation.navigate('ProfileEdit')} style={styles.editProfilebtn} >
+            <Text style={styles.userEmail}>Edit Profile</Text>
+          </TouchableOpacity>
           {
             loading ? (
             <View style={styles.loadingContainer}>
@@ -208,7 +212,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   applybtn: {
-    backgroundColor:'red',
     width:'40%',
     height:40,
     borderRadius:20,
@@ -221,12 +224,12 @@ const styles = StyleSheet.create({
     fontSize: 16, 
     fontWeight: 'bold', 
   },
-
+  editProfilebtn:{
+    backgroundColor:'rgba(0, 0, 0, 0.50)',
+    paddingVertical:6,
+    paddingHorizontal:15,
+    marginTop:6,
+    borderRadius:6
+  }
     
 });
-  
-  
-  
-  
-
-

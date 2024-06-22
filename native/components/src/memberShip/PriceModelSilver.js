@@ -9,7 +9,6 @@ const PriceModelSilver = () => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        // Background Linear Gradient
         colors={['rgba(243, 193, 71, 0.3594)', 'rgba(0, 0, 0, 0.9872)']}
         style={styles.background}
       />
@@ -18,11 +17,15 @@ const PriceModelSilver = () => {
         <TouchableOpacity onPress={()=>navigation.navigate('MemberShip')} >
              <AntDesign name="arrowleft" size={24} color="white" />
         </TouchableOpacity>
+        <View style={styles.goldViewtext} >
+            <Text style={styles.textPay} >GOLD</Text>
+            <View style={styles.MostPopularView} >
+                <Text style={styles.mosrPopularText} >Most Popular</Text>
+            </View>
+        </View>
 
-
-        <Text style={styles.textPay} >SILVER</Text>
         <View style={styles.amountEditor} >
-            <Text style={styles.aedamount} >10AED</Text>
+            <Text style={styles.aedamount} >30AED</Text>
             <View>
                 <Text style={styles.textEditor} >per editor/month</Text>
                 <Text style={styles.textEditor}>billed monthly</Text>
@@ -31,7 +34,7 @@ const PriceModelSilver = () => {
 
         <View style={styles.unlimitedView} >
             <Image source={require('../../../assets/images/payicon.png')} />
-            <Text style={styles.unlimitedText} >Limited generations (~200/month)</Text>
+            <Text style={styles.unlimitedText} >Unlimited Relaxed generations</Text>
         </View>
 
         <View style={styles.unlimitedView} >
@@ -80,7 +83,7 @@ const styles = StyleSheet.create({
         fontWeight:'800',
         fontSize:16,
         textTransform:'uppercase',
-        marginTop:30
+        
     },
     mainPayView:{
         paddingTop:40,
@@ -127,6 +130,24 @@ const styles = StyleSheet.create({
         color:'white',
         fontSize:16,
         fontWeight:'800'
+    },
+    mosrPopularText:{
+        color:'black',
+        fontSize:12,
+        fontWeight:'500'
+    },
+    goldViewtext:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        marginTop:30
+    },
+    MostPopularView:{
+        backgroundColor:'white',
+        borderRadius:8,
+        justifyContent:'center',
+        alignItems:'center',
+        paddingHorizontal:10,
+        paddingVertical:8
     }
 })
 

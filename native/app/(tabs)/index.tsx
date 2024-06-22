@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler';
 import { Image, StyleSheet, Platform, View } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
@@ -15,6 +14,23 @@ import NewPassword from '../../components/src/newPassword/NewPassword'
 import HomePage from '../../components/src/JoveraBroker/homePage/HomePage'
 import Dashboard from '../../components/src/dashboard/Dashboard'
 import Navbar from '../../components/src/navbar/Navbar'
+import BusinessFinance from '../../components/src/businessFinance/BusinessFinance'
+import Advertising from '../../components/src/advertising/Advertising'
+import WebDev from '../../components/src/webDev/WebDev'
+import Mortgage from '../../components/src/mortgage/Mortgage'
+import PersonalLoan from '../../components/src/personalLoan/PersonalLoan'
+import TravelTours from '../../components/src/travelTours/TravelTours'
+import RealEstate from '../../components/src/realEstate/RealEstate'
+import LoanCalculator from '../../components/src/loanCalculator/LoanCalculator'
+import HelpandSupport from '../../components/src/helpAndSupport/HelpandSupport'
+import PrivacyPolicy from '../../components/src/privacyPolicy/PrivacyPolicy'
+import TermsAndConditions from '../../components/src/termsAndConditions/TermsAndConditions'
+import AboutUs from '../../components/src/aboutUs/AboutUs'
+import FeedBack from '../../components/src/feedBack/FeedBack'
+import ContactUs from '../../components/src/contactUs/ContactUs'
+import PersonalLoanFoam from '../../components/src/personalLoanFoam/PersonalLoanFoam'
+import MortgageLoanFoam from '../../components/src/mortgageLoanFoam/MortgageLoanFoam'
+import BusinessFinanceFoam from '../../components/src/businessFinanceFoam/BusinessFinanceFoam'
 import RealEstateFoam from '../../components/src/realEstateFoam/RealEstateFoam'
 import ProfileEdit from '../../components/src/profileEdit/ProfileEdit'
 import Settings from '../../components/src/settings/Settings'
@@ -30,8 +46,8 @@ export default function HomeScreen() {
   return (
     // <AuthProvider>
      <View style={{ flex: 1 }}>
-      <Stack.Navigator initialRouteName="WelcomeScreen">
-        <Stack.Screen name="Navbar" component={Navbar} /> 
+      <Stack.Navigator initialRouteName="Advertising">
+        <Stack.Screen name="Navbar" component={Navbar} />
         {/* <Stack.Screen name="Login" component={Login}  options={{ headerShown: false,  }} />
         <Stack.Screen name="MianScreen" component={MianScreen}  options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={Register}  options={{ headerShown: false }} />
