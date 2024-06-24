@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Upload</title>
+</head>
+<body>
+    <form id="uploadForm" enctype="multipart/form-data" >
+        <input type="file" id="document" name="document" accept=".pdf,.doc,.docx,.jpg,.png" required>
+        <button style="background-color: #f39c12; border: none; padding: 10px; border-radius: 10px; margin-top: 10px; width: 100%; " type="submit">Upload</button>
+    </form>
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData();
+            const fileField = document.querySelector('input[type="file"]');
+            
+            formData.append('document', fileField.files[0]);
+
+            try {
+                const response = await fetch('http://192.168.2.137:8080/api/users/upload-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                // Send the result back to React Native
+                window.ReactNativeWebView.postMessage(JSON.stringify(result));
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('response').innerHTML = `<p style="color: red;">Error uploading file. Please try again.</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
