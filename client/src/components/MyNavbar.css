@@ -1,0 +1,35 @@
+.custom-navbar {
+    background: linear-gradient(90deg, #007bff 0%, #6610f2 100%);
+    border-bottom: 3px solid #ffdd57;
+  }
+  
+  .navbar-brand {
+    font-family: 'Lobster', cursive;
+    font-size: 1.5rem;
+    color: #ffdd57 !important;
+  }
+  
+  .nav-link {
+    font-size: 1.1rem;
+    margin-right: 15px;
+    color: #ffffff !important;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: #ffdd57 !important;
+  }
+  
+  .nav-dropdown .dropdown-item {
+    color: #333 !important;
+  }
+  
+  .nav-dropdown .dropdown-item:hover {
+    background-color: #ffdd57 !important;
+    color: #fff !important;
+  }
+  
+  .nav-dropdown .dropdown-menu {
+    background-color: #343a40;
+  }
+  
