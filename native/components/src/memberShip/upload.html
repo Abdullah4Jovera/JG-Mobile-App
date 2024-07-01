@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Upload</title>
+     <style>
+        /* Styles for spinner covering entire screen */
+        .spinner-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-left-color: #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Spinner overlay -->
+    <div class="spinner-overlay" id="spinnerOverlay">
+        <div class="spinner"></div>
+        <p style="color: white; font-size: 18px; margin-top: 10px;">Uploading...</p>
+    </div>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="document" name="document" accept=".pdf,.doc,.docx,.jpg,.png" multiple required>
+        <button style="background-color: #f39c12; border: none; padding: 10px; border-radius: 10px; margin-top: 10px; width: 100%;" type="submit">Upload</button>
+    </form>
+    <div id="response"></div>
+    
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData();
+            const fileField = document.querySelector('input[type="file"]');
+            
+            for (const file of fileField.files) {
+                formData.append('documents', file);
+            }
+
+            // Show the spinner overlay
+            document.getElementById('spinnerOverlay').style.display = 'block';
+
+            try {
+                const response = await fetch('https://outdoors-casinos-achieving-vista.trycloudflare.com/api/users/uploads', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload documents');
+                }
+
+                // Clear input field after successful upload
+                fileField.value = '';
+
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const result = await response.json();
+                    // Send the result back to React Native
+                    window.ReactNativeWebView.postMessage(JSON.stringify(result));
+                } else {
+                    // Handle unexpected response format (HTML or other)
+                    throw new Error('Unexpected response from server');
+                }
+
+                // Hide the spinner overlay
+                document.getElementById('spinnerOverlay').style.display = 'none';
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('response').innerHTML = `<p style="color: red;">Error uploading files. Please try again.</p>`;
+
+                // Hide the spinner overlay
+                document.getElementById('spinnerOverlay').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
